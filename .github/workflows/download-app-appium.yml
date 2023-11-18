@@ -1,0 +1,46 @@
+name: Download File Workflow
+
+on:
+  workflow_dispatch:
+    branches:
+      - main  # Change this to your main branch name
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4.1.1
+
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Call MsAppCenter For Latest build
+        id: get-app-url
+        uses: fjogeleit/http-request-action@v1
+        with:
+          url: 'https://api.appcenter.ms/v0.1/apps/${{ secrets.GROUP_NAME }}/${{ secrets.APP_NAME }}/releases/latest'
+          method: 'GET'
+          customHeaders: '{"Accept": "application/json","X-API-Token":"${{ secrets.APPCENTER }}"}'
+
+      - name: Print URL
+        run: |
+          echo "URL is " ${{ fromJson(steps.get-app-url.outputs.response).download_url }} 
+
+      - name: Download Artifact
+        uses: suisei-cn/actions-download-file@v1.4.0
+        with:
+          fileName: app.apk
+          url: ${{ fromJson(steps.get-app-url.outputs.response).download_url }}
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v2
+        with:
+          name: APK-File
+          path: app.apk
+          
+
