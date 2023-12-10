@@ -17,8 +17,8 @@ jobs:
       - name: Call Curl Command
         id: call-curl-command
         run: |
-          json_response=$(curl -s -X GET "https://dummyjson.com/products" \
-                          -H "Content-Type: application/json")
+          curl -s -X GET "https://dummyjson.com/products" \
+          -H "Content-Type: application/json"
 
       - name: Set environment variable from JSON
         run: |
