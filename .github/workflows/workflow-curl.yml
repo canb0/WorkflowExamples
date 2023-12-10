@@ -14,15 +14,15 @@ jobs:
         uses: actions/checkout@v4.1.1
 
 
-      - name: Build and Test
+      - name: Call Curl Command
+        id: call-curl-command
         run: |
           json_response=$(curl -s -X GET "https://dummyjson.com/products" \
                           -H "Content-Type: application/json")
-          echo "::set-output name=json_response::$json_response"
 
       - name: Set environment variable from JSON
         run: |
-            first_product_title=$(echo "${{ steps.curl.outputs.json_response }}" | jq -r '.products[0].title')
+            first_product_title=${{ fromJson(steps.call-curl-command.outputs.response).products[0].title }} 
             echo "FIRST_PRODUCT_TITLE=$first_product_title" >> $GITHUB_ENV
 
       - name: Display environment variable
