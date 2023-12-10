@@ -23,8 +23,8 @@ jobs:
 
       - name: Set environment variable from JSON
         run: |
-            first_product_title=${{ fromJson(steps.call-curl-command.outputs.json_response).products[0].title }} 
-            echo "FIRST_PRODUCT_TITLE='$first_product_title'" >> $GITHUB_ENV
+            first_product_id=${{ fromJson(steps.call-curl-command.outputs.json_response).products[0].id }} 
+            echo "FIRST_PRODUCT_ID=$first_product_id" >> $GITHUB_ENV
 
       - name: Display environment variable
-        run: echo "FIRST_PRODUCT_TITLE is ${{ env.FIRST_PRODUCT_TITLE }}"
+        run: echo "First products ID is ${{ env.FIRST_PRODUCT_ID }}"
