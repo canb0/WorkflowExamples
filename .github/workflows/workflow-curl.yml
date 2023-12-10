@@ -1,9 +1,7 @@
 name: Run CURL Command
 
 on:
-  push:
-    branches:
-      - main  # Change this to your main branch name
+  workflow_dispatch:
 
 jobs:
   build:
@@ -13,18 +11,17 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4.1.1
 
-
-      - name: Call Curl Command
+      - name: Call curl command
         id: call-curl-command
         run: |
           json_response=$(curl -s -X GET "https://dummyjson.com/products" \
-          -H "Content-Type: application/json")
+                    -H "Content-Type: application/json")
           echo "::set-output name=json_response::$json_response"
 
       - name: Set environment variable from JSON
         run: |
-            first_product_id=${{ fromJson(steps.call-curl-command.outputs.json_response).products[0].id }} 
-            echo "FIRST_PRODUCT_ID=$first_product_id" >> $GITHUB_ENV
+          first_product_id=${{ fromJSON(steps.call-curl-command.outputs.json_response).products[0].id }}
+          echo "FIRST_PRODUCT_ID=$first_product_id" >> $GITHUB_ENV
 
-      - name: Display environment variable
-        run: echo "First products ID is ${{ env.FIRST_PRODUCT_ID }}"
+      - name : Printout the variable
+        run: echo "First product id is ${{ env.FIRST_PRODUCT_ID }}
