@@ -1,0 +1,29 @@
+name: Run CURL Command
+
+on:
+  push:
+    branches:
+      - main  # Change this to your main branch name
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4.1.1
+
+
+      - name: Build and Test
+        run: |
+          json_response=$(curl -s -X GET "https://dummyjson.com/products" \
+                          -H "Content-Type: application/json")
+          echo "::set-output name=json_response::$json_response"
+
+      - name: Set environment variable from JSON
+        run: |
+            first_product_title=$(echo "${{ steps.curl.outputs.json_response }}" | jq -r '.products[0].title')
+            echo "FIRST_PRODUCT_TITLE=$first_product_title" >> $GITHUB_ENV
+
+      - name: Display environment variable
+        run: echo "FIRST_PRODUCT_TITLE is ${{ env.FIRST_PRODUCT_TITLE }}"

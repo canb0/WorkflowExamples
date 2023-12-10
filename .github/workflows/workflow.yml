@@ -58,3 +58,14 @@ jobs:
       - name: Deploy to Production
         run: |
           echo "Deploying to prod"
+
+      - name: Notify the team about deployment
+        uses: dragos-cojocari/ms-teams-notification@v1.0.2
+        if: success()
+        with:
+          github-token: ${{ github.token }} # this will use the runner's token.
+          ms-teams-webhook-uri: ${{ secrets.TEAMS }}
+          notification-summary: "Deployment for ${{ github.repository }} succeeded."
+          notification-color: 28a745
+          timezone: Europe/Amsterdam
+
